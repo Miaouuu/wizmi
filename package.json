@@ -1,6 +1,9 @@
 {
   "name": "wizmi",
   "version": "0.0.1",
+  "description": "Package Wizmi",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
   "engines": {
     "node": ">=16.13.1"
   },
@@ -8,7 +11,8 @@
     "build": "rimraf ./build && tsc",
     "lint": "eslint . --ext .ts",
     "format": "eslint . --ext .ts --fix",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "prepublishOnly" : "npm run lint && npm run build"    
   },
   "author": "Ruben",
   "license": "ISC",
@@ -24,7 +28,6 @@
     "husky": "^7.0.4",
     "prettier": "^2.5.0",
     "rimraf": "^3.0.2",
-    "ts-node": "^10.4.0",
     "typescript": "^4.5.2"
   }
 }
