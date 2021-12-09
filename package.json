@@ -1,6 +1,6 @@
 {
   "name": "wizmi",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Package Wizmi",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -12,8 +12,8 @@
     "lint": "eslint . --ext .ts",
     "format": "eslint . --ext .ts --fix",
     "prepare": "husky install",
-    "prepublishOnly" : "npm run lint && npm run build",
-    "release": "npm version patch"    
+    "prepublishOnly": "npm run lint && npm run build",
+    "release": "npm version patch"
   },
   "author": "Ruben",
   "license": "ISC",
