@@ -17,8 +17,7 @@
     "airbnb-typescript/base"
   ],
   "rules": {
-    "no-restricted-syntax": "off",
     "no-continue": "off",
-    "no-plusplus": "off"
+    "@typescript-eslint/no-loop-func": "off"
   }
 }

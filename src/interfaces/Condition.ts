@@ -1,7 +1,7 @@
-import { Item } from './Item';
-import { Trigger } from './Trigger';
+import Items from '../enums/Items';
+import Triggers from '../enums/Triggers';
 
 export interface Condition {
-  condition: Trigger;
-  action: Item;
+  condition: Triggers;
+  action: Items;
 }
