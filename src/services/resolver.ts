@@ -57,69 +57,6 @@ export const changePlayerPosition = (
   return [x, y];
 };
 
-// export const squareResolver = (
-//   square: Square,
-//   responses: Array<Movement | Condition | Loop>,
-// ): boolean => {
-//   const { movements, conditions, loops } = square.actions;
-//   let { start, items, triggers } = square;
-//   const totalActions = movements.length + conditions.length + loops.length;
-//   if (totalActions !== responses.length) {
-//     return false;
-//   }
-//   for (const response of responses) {
-//     // eslint-disable-next-line @typescript-eslint/no-loop-func
-//     items.keys = square.items.keys.map((key): Key => {
-//       if (key.position[0] === start[0] && key.position[1] === start[1]) {
-//         return {
-//           ...key,
-//           taken: true,
-//         };
-//       }
-//       return key;
-//     });
-//     // eslint-disable-next-line @typescript-eslint/no-loop-func
-//     items.swords = square.items.swords.map((sword): Sword => {
-//       if (sword.position[0] === start[0] && sword.position[1] === start[1]) {
-//         return {
-//           ...sword,
-//           taken: true,
-//         };
-//       }
-//       return sword;
-//     });
-//     const isCondition = isInside(response, conditions);
-//     if (isCondition) {
-//       continue;
-//     }
-//     const isMovement = isInside(response, movements);
-//     if (isMovement) {
-//       const movement = response as Movement;
-//       const direction = directionValue(movement.direction);
-//       for (let i = 0; i < movement.quantity; i++) {
-//         start = changePlayerPosition(
-//           direction,
-//           {
-//             start,
-//             shape: square.shape,
-//             grid: square.grid,
-//             infinity: square.infinity,
-//           },
-//         );
-//       }
-//       continue;
-//     }
-//     const isLoop = isInside(response, loops);
-//     if (isLoop) {
-//       continue;
-//     }
-//   }
-//   if (JSON.stringify(square.start) !== JSON.stringify(square.end)) {
-//     return false;
-//   }
-//   return true;
-// };
-
 export const squareResolver = (
   square: Square,
   responses: Array<Movement | Condition | Loop>,
