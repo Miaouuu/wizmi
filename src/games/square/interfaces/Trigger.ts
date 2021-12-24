@@ -1,6 +1,7 @@
 import { Movement } from './Movement';
 
 export interface Trigger {
+  id: number
   position: Array<number>;
 }
 

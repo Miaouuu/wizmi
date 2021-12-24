@@ -1,4 +1,5 @@
 export interface Item {
+  id: number
   position: Array<number>;
   taken: boolean;
   reusable: boolean;
