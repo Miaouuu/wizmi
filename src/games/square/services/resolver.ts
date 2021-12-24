@@ -73,10 +73,12 @@ export const squareResolver = (
   // LOOP TO START THE GAME
   let actualAction = 0;
   let actionResponseLoop: Loop = {
+    id: 0,
     condition: 0,
     block: 0,
   };
   const actionLoop: Loop = {
+    id: 0,
     condition: 0,
     block: 0,
   };
