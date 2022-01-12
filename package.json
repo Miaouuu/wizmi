@@ -1,8 +1,12 @@
 {
   "name": "wizmi",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Wizmi Modules",
-  "keywords": ["learning", "wizmi", "nodejs"],
+  "keywords": [
+    "learning",
+    "wizmi",
+    "nodejs"
+  ],
   "homepage": "https://github.com/Miaouuu/wizmi",
   "repository": {
     "type": "git",
