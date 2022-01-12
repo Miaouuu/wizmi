@@ -8,7 +8,7 @@ import Items from '../enums/Items';
 
 export const isInside = (
   element: Movement | Condition | Loop,
-  array: Array<Movement | Condition | Loop>,
+  array: (Movement | Condition | Loop)[],
 ): boolean => {
   const elementStringify = JSON.stringify(Object.entries(element).sort());
   const inside = array.findIndex((action) => {
@@ -22,16 +22,16 @@ export const isInside = (
 };
 
 export const changePlayerPosition = (
-  direction: Array<number>,
+  direction: number[],
   {
     start, shape, grid, infinity,
   }: {
-    start: Array<number>;
+    start: number[];
     shape: Shape;
-    grid: Array<Array<number>>;
+    grid: number[][];
     infinity: boolean;
   },
-): Array<number> => {
+): number[] => {
   const [xInitial = 0, yInitial = 0] = start;
   let [x = 0, y = 0] = start;
   const [xDirection = 0, yDirection = 0] = direction;
@@ -59,7 +59,7 @@ export const changePlayerPosition = (
 
 export const squareResolver = (
   square: Square,
-  responses: Array<Movement | Condition | Loop>,
+  responses: (Movement | Condition | Loop)[],
 ): boolean => {
   // INIT
   let player = square.start;
