@@ -13,8 +13,8 @@
     "lint": "eslint . --ext .ts",
     "format": "eslint . --ext .ts --fix",
     "postinstall": "husky install",
-    "prepublishOnly": "npm run lint && npm run build",
-    "release": "npm version patch"
+    "prepublishOnly": "pnpm run lint && pnpm run build",
+    "release": "pnpm version patch"
   },
   "author": "Ruben",
   "license": "ISC",
