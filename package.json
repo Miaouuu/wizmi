@@ -5,13 +5,14 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "engines": {
-    "node": ">=16.13.1"
+    "node": ">=16.13.1",
+    "pnpm": ">=6.24.2"
   },
   "scripts": {
     "build": "rimraf ./build && tsc",
     "lint": "eslint . --ext .ts",
     "format": "eslint . --ext .ts --fix",
-    "prepare": "husky install",
+    "postinstall": "husky install",
     "prepublishOnly": "npm run lint && npm run build",
     "release": "npm version patch"
   },
@@ -25,6 +26,7 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^16.1.0",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-prettier": "^4.0.0",
     "husky": "^7.0.4",
     "prettier": "^2.5.0",
