@@ -6,10 +6,10 @@ import { Shape } from './Shape';
 import { Door, Ennemy } from './Trigger';
 
 export interface Square {
-  start: Array<number>;
-  end: Array<number>;
+  start: number[];
+  end: number[];
   shape: Shape;
-  grid: Array<Array<number>>;
+  grid: number[][];
   infinity: boolean;
   actions: SquareAction;
   triggers: SquareTrigger;
@@ -17,17 +17,17 @@ export interface Square {
 }
 
 export interface SquareAction {
-  movements: Array<Movement>;
-  conditions: Array<Condition>;
-  loops: Array<Loop>;
+  movements: Movement[];
+  conditions: Condition[];
+  loops: Loop[];
 }
 
 export interface SquareTrigger {
-  doors: Array<Door>;
-  ennemies: Array<Ennemy>;
+  doors: Door[];
+  ennemies: Ennemy[];
 }
 
 export interface SquareItem {
-  keys: Array<Key>;
-  swords: Array<Sword>;
+  keys: Key[];
+  swords: Sword[];
 }

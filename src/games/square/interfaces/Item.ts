@@ -1,6 +1,6 @@
 export interface Item {
   id: number
-  position: Array<number>;
+  position: number[];
   taken: boolean;
   reusable: boolean;
 }

@@ -2,7 +2,7 @@ import { Movement } from './Movement';
 
 export interface Trigger {
   id: number
-  position: Array<number>;
+  position: number[];
 }
 
 export interface Door extends Trigger {
@@ -14,5 +14,5 @@ export interface Ennemy extends Trigger {
   loop: boolean;
   needSword: boolean;
   dead: boolean;
-  movements: Array<Movement>;
+  movements: Movement[];
 }
