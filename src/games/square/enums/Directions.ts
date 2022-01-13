@@ -11,7 +11,7 @@ export enum Direction {
 
 export const directionValue = (
   direction: Direction,
-): Array<number> => {
+): number[] => {
   let movement = [0, 0];
   switch (direction) {
     case Direction.Left:

@@ -1,7 +1,17 @@
 {
   "name": "wizmi",
-  "version": "0.0.6",
-  "description": "Package Wizmi",
+  "version": "0.0.7",
+  "description": "Wizmi Modules",
+  "keywords": [
+    "learning",
+    "wizmi",
+    "nodejs"
+  ],
+  "homepage": "https://github.com/Miaouuu/wizmi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Miaouuu/wizmi"
+  },
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "engines": {
@@ -17,7 +27,7 @@
     "release": "pnpm version patch"
   },
   "author": "Ruben",
-  "license": "ISC",
+  "license": "GPL-3.0-only",
   "devDependencies": {
     "@types/node": "^16.11.11",
     "@typescript-eslint/eslint-plugin": "^5.5.0",
