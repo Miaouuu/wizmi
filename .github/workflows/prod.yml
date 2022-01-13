@@ -31,6 +31,9 @@ jobs:
       - name: Run linter
         run: pnpm run lint
       
+      - name: Set config
+        run: pnpm config set '//registry.npmjs.org/:_authToken' "${{ secrets.NODE_AUTH_TOKEN }}"
+        
       - name: Publish
         run: pnpm publish --access public
         env:
