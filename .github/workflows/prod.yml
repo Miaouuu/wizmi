@@ -23,6 +23,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16'
+          registry-url: 'https://registry.npmjs.org'
           cache: 'pnpm'
 
       - name: "Install dependencies"
@@ -30,11 +31,8 @@ jobs:
 
       - name: Run linter
         run: pnpm run lint
-      
-      - name: Set config
-        run: pnpm config set '//registry.npmjs.org/:_authToken' "${{ secrets.NODE_AUTH_TOKEN }}"
         
       - name: Publish
-        run: pnpm publish --access public
+        run: pnpm publish
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
