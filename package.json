@@ -22,7 +22,7 @@
     "build": "rimraf ./build && tsc",
     "lint": "eslint . --ext .ts",
     "format": "eslint . --ext .ts --fix",
-    "postinstall": "husky install",
+    "prepare": "husky install",
     "prepublishOnly": "pnpm run lint && pnpm run build",
     "release": "pnpm version patch"
   },
