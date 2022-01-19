@@ -9,5 +9,5 @@ export interface Worlds {
   id: number
   name: string
   value: number
-  levels: Levels
+  levels: Levels[]
 }
