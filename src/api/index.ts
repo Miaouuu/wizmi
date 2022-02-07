@@ -1,4 +1,5 @@
 export { LoginUserInput, RegisterUserInput, Token } from './Auth';
+export { CreateFeedbackInput, ValidateFeedbackParams, DeleteFeedbackParams } from './FeedBacks';
 export {
   CreateLevelInput, FindLevelParams, Levels, Types,
 } from './Levels';
