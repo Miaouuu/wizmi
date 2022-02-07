@@ -8,5 +8,5 @@ export interface ValidateFeedbackParams {
 }
 
 export interface DeleteFeedbackParams{
-  token: number
+  id: number
 }
