@@ -5,7 +5,7 @@ import { Square, SquareOptions } from '../interfaces/Square';
 import { directionValue } from '../enums/Directions';
 import { Shape } from '../interfaces/Shape';
 import Items from '../enums/Items';
-import { Item } from '../../../../build/games/square/interfaces/Item';
+import { Item } from '../interfaces/Item';
 
 export const isInside = (
   element: Movement | Condition | Loop,
