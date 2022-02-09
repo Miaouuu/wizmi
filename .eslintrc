@@ -18,6 +18,7 @@
   ],
   "rules": {
     "no-continue": "off",
-    "@typescript-eslint/no-loop-func": "off"
+    "@typescript-eslint/no-loop-func": "off",
+    "no-await-in-loop": "off"
   }
 }
