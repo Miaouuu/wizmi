@@ -18,7 +18,7 @@ export interface Square {
 }
 
 export interface SquareOptions {
-  cbPlayerPosition: (playerPosition: number[]) => Promise<void>
+  cbPlayerPosition: (playerPosition: number[]) => void
 }
 
 export interface SquareAction {
