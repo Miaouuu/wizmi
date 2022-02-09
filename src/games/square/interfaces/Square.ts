@@ -11,9 +11,14 @@ export interface Square {
   shape: Shape;
   grid: number[][];
   infinity: boolean;
+  full: boolean
   actions: SquareAction;
   triggers: SquareTrigger;
   items: SquareItem;
+}
+
+export interface SquareOptions {
+  cbPlayerPosition: (playerPosition: number[]) => void
 }
 
 export interface SquareAction {
