@@ -13,4 +13,6 @@ export {
   Square, SquareAction, SquareItem, SquareTrigger,
 } from './interfaces/Square';
 export { Trigger, Door, Ennemy } from './interfaces/Trigger';
-export { isInside, squareResolver, changePlayerPosition } from './services/resolver';
+export {
+  isInside, squareResolver, changePlayerPosition, takeItems,
+} from './services/resolver';

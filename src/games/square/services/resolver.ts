@@ -1,10 +1,11 @@
 import { Movement } from '../interfaces/Movement';
 import { Condition } from '../interfaces/Condition';
 import { Loop } from '../interfaces/Loop';
-import { Square } from '../interfaces/Square';
+import { Square, SquareOptions } from '../interfaces/Square';
 import { directionValue } from '../enums/Directions';
 import { Shape } from '../interfaces/Shape';
 import Items from '../enums/Items';
+import { Item } from '../interfaces/Item';
 
 export const isInside = (
   element: Movement | Condition | Loop,
@@ -57,9 +58,20 @@ export const changePlayerPosition = (
   return [x, y];
 };
 
+export const takeItems = (items: Item[], player: number[]): Item[] => items.map((item) => {
+  if (item.position[0] === player[0] && item.position[1] === player[1]) {
+    return {
+      ...item,
+      taken: true,
+    };
+  }
+  return item;
+});
+
 export const squareResolver = (
   square: Square,
   responses: (Movement | Condition | Loop)[],
+  options?: SquareOptions,
 ): boolean => {
   // INIT
   let player = square.start;
@@ -67,7 +79,7 @@ export const squareResolver = (
   let { doors, ennemies } = square.triggers;
   let { keys, swords } = square.items;
   const totalActions = movements.length + conditions.length + loops.length;
-  if (totalActions !== responses.length) {
+  if (totalActions !== responses.length && square.full) {
     return false;
   }
   // LOOP TO START THE GAME
@@ -112,24 +124,8 @@ export const squareResolver = (
       actualAction += 1;
       continue;
     }
-    keys = keys.map((key) => {
-      if (key.position[0] === player[0] && key.position[1] === player[1]) {
-        return {
-          ...key,
-          taken: true,
-        };
-      }
-      return key;
-    });
-    swords = swords.map((sword) => {
-      if (sword.position[0] === player[0] && sword.position[1] === player[1]) {
-        return {
-          ...sword,
-          taken: true,
-        };
-      }
-      return sword;
-    });
+    keys = takeItems(keys, player);
+    swords = takeItems(swords, player);
     // ! PERMET PAS DE GERER PLUSIEURS ITEM EN MEME TEMPS && NOT REUSABLE
     const isCondition = isInside(response, conditions);
     if (isCondition) {
@@ -199,8 +195,9 @@ export const squareResolver = (
     if (isMovement) {
       const movement = response as Movement;
       const direction = directionValue(movement.direction);
-      for (let i = 0; i < movement.quantity; i += 1) {
-        player = changePlayerPosition(
+      const quantity = movement.quantity === -1 ? Infinity : movement.quantity;
+      for (let i = 0; i < quantity; i += 1) {
+        const newPlayerPosition = changePlayerPosition(
           direction,
           {
             start: player,
@@ -209,7 +206,12 @@ export const squareResolver = (
             infinity: square.infinity,
           },
         );
+        if (newPlayerPosition[0] === player[0] && newPlayerPosition[1] === player[1]) {
+          break;
+        }
+        player = newPlayerPosition;
       }
+      if (options) options.cbPlayerPosition(player);
       actualAction += 1;
       continue;
     }
