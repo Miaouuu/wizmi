@@ -68,11 +68,11 @@ export const takeItems = (items: Item[], player: number[]): Item[] => items.map(
   return item;
 });
 
-export const squareResolver = async (
+export const squareResolver = (
   square: Square,
   responses: (Movement | Condition | Loop)[],
   options?: SquareOptions,
-): Promise<boolean> => {
+): boolean => {
   // INIT
   let player = square.start;
   const { movements, conditions, loops } = square.actions;
@@ -211,7 +211,7 @@ export const squareResolver = async (
         }
         player = newPlayerPosition;
       }
-      if (options) await options.cbPlayerPosition(player);
+      if (options) options.cbPlayerPosition(player);
       actualAction += 1;
       continue;
     }
