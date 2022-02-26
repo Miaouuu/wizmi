@@ -1,7 +1,9 @@
 import Triggers from './enums/Triggers';
 import Items from './enums/Items';
+import Direction from './enums/Directions';
+import directionValue from './services/direction';
 
-export { Direction, directionValue } from './enums/Directions';
+export { Direction };
 export { Items };
 export { Triggers };
 export { Condition } from './interfaces/Condition';
@@ -13,6 +15,8 @@ export {
   Square, SquareAction, SquareItem, SquareTrigger,
 } from './interfaces/Square';
 export { Trigger, Door, Ennemy } from './interfaces/Trigger';
+export { directionValue };
 export {
   isInside, squareResolver, changePlayerPosition, takeItems,
 } from './services/resolver';
+export { Actions } from './types/Actions';
