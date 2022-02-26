@@ -3,8 +3,5 @@ export interface Item {
   position: number[];
   taken: boolean;
   reusable: boolean;
+  onWalk: boolean
 }
-
-export type Key = Item;
-
-export type Sword = Item;

@@ -7,7 +7,7 @@ export { Direction };
 export { Items };
 export { Triggers };
 export { Condition } from './interfaces/Condition';
-export { Item, Key, Sword } from './interfaces/Item';
+export { Item } from './interfaces/Item';
 export { Loop } from './interfaces/Loop';
 export { Movement } from './interfaces/Movement';
 export { Shape } from './interfaces/Shape';
@@ -20,3 +20,5 @@ export {
   isInside, squareResolver, changePlayerPosition, takeItems,
 } from './services/resolver';
 export { Actions } from './types/Actions';
+export { Key } from './types/Key';
+export { Sword } from './types/Sword';
