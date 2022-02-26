@@ -2,14 +2,19 @@ import { Movement } from '../interfaces/Movement';
 import { Condition } from '../interfaces/Condition';
 import { Loop } from '../interfaces/Loop';
 import { Square, SquareOptions } from '../interfaces/Square';
-import { directionValue } from '../enums/Directions';
+import directionValue from './direction';
 import { Shape } from '../interfaces/Shape';
 import Items from '../enums/Items';
 import { Item } from '../interfaces/Item';
+import { Key } from '../types/Key';
+import { Sword } from '../types/Sword';
+import Triggers from '../enums/Triggers';
+import { Actions } from '../types/Actions';
+import { Door, Ennemy } from '../interfaces/Trigger';
 
 export const isInside = (
-  element: Movement | Condition | Loop,
-  array: (Movement | Condition | Loop)[],
+  element: Actions,
+  array: Actions[],
 ): boolean => {
   const elementStringify = JSON.stringify(Object.entries(element).sort());
   const inside = array.findIndex((action) => {
@@ -52,172 +57,181 @@ export const changePlayerPosition = (
   }
   const positionXInGrid = grid[x] ?? [1];
   const positionInGrid = positionXInGrid[y] ?? 1;
-  if (positionInGrid === 1) {
-    return [xInitial, yInitial];
-  }
-  return [x, y];
+  return positionInGrid === 1 ? [xInitial, yInitial] : [x, y];
 };
 
-export const takeItems = (items: Item[], player: number[]): Item[] => items.map((item) => {
-  if (item.position[0] === player[0] && item.position[1] === player[1]) {
-    return {
-      ...item,
-      taken: true,
-    };
+export const takeItems = (items: Item[], player: number[], lastMove: boolean): Item[] => (
+  items.map((item) => {
+    if (item.position[0] === player[0] && item.position[1] === player[1]) {
+      if (item.onWalk || (!item.onWalk === lastMove)) {
+        return {
+          ...item,
+          taken: true,
+        };
+      }
+    }
+    return item;
+  }));
+
+export const checkDoors = (
+  doors: Door[],
+  player: number[],
+): [Triggers.Door | undefined, number] => {
+  const doorIndex = doors.findIndex((door) => {
+    if (door.position[0] === player[0] && door.position[1] === player[1] && !door.open) {
+      return true;
+    }
+    return false;
+  });
+  return [doorIndex === -1 ? undefined : Triggers.Door, doorIndex];
+};
+
+export const checkEnnemies = (
+  ennemies: Ennemy[],
+  player: number[],
+): [Triggers.Ennemy | undefined, number] => {
+  const ennemyIndex = ennemies.findIndex((ennemy) => {
+    if (ennemy.position[0] === player[0] && ennemy.position[1] === player[1] && !ennemy.dead) {
+      return true;
+    }
+    return false;
+  });
+  return [ennemyIndex === -1 ? undefined : Triggers.Ennemy, ennemyIndex];
+};
+
+export const moveEnnemies = (
+  ennemies: Ennemy[],
+  optionsChangePosition: {
+    start: number[];
+    shape: Shape;
+    grid: number[][];
+    infinity: boolean;
+  },
+): Ennemy[] => ennemies.map((ennemy) => {
+  const { movements, dead, loop } = ennemy;
+  let { position } = ennemy;
+  if (movements.length === 0 || dead) return ennemy;
+  const movement = movements.shift() as Movement;
+  const direction = directionValue(movement.direction);
+  const options = {
+    ...optionsChangePosition,
+    start: position,
+  };
+  const quantity = movement.quantity === -1 ? Infinity : movement.quantity;
+  for (let i = 0; i < quantity; i += 1) {
+    position = changePlayerPosition(direction, options);
   }
-  return item;
+  if (loop) {
+    movements.push(movement);
+  }
+  return {
+    ...ennemy,
+    position,
+    movements,
+  };
 });
+
+export const checkLoops = (responses: Actions[], loops: Loop[]) => {
+  const loopUntilTheEnd = true;
+  const responsesReversed: unknown[] = responses.reverse();
+  while (loopUntilTheEnd) {
+    const loopIndex = responsesReversed.findIndex((res) => isInside(res as Actions, loops));
+    if (loopIndex === -1) break;
+    const { condition, block } = responsesReversed[loopIndex] as Loop;
+    const blockToInsert = responsesReversed.slice(loopIndex - block, loopIndex);
+    const arrayToInsert = new Array(condition).fill(blockToInsert).flat(2);
+    responsesReversed.splice(loopIndex - block, block + 1, arrayToInsert);
+  }
+  return responsesReversed.flat().reverse() as Actions[];
+};
+
+export const isCondition = (action: Actions): action is Condition => 'action' in action;
 
 export const squareResolver = (
   square: Square,
-  responses: (Movement | Condition | Loop)[],
+  responses: Actions[],
   options?: SquareOptions,
 ): boolean => {
-  // INIT
   let player = square.start;
   const { movements, conditions, loops } = square.actions;
-  let { doors, ennemies } = square.triggers;
+  const { doors } = square.triggers;
+  let { ennemies } = square.triggers;
   let { keys, swords } = square.items;
   const totalActions = movements.length + conditions.length + loops.length;
   if (totalActions !== responses.length && square.full) {
     return false;
   }
-  // LOOP TO START THE GAME
-  let actualAction = 0;
-  let actionResponseLoop: Loop = {
-    id: 0,
-    condition: 0,
-    block: 0,
-  };
-  const actionLoop: Loop = {
-    id: 0,
-    condition: 0,
-    block: 0,
-  };
-  let initActionLoop = 0;
-
-  while (actualAction < responses.length) {
-    let triggerOn: Items;
-    let blocked = false;
-    let response;
-    if (actionLoop.condition < actionResponseLoop.condition) {
-      if (actionLoop.block === actionResponseLoop.block) {
-        actionLoop.condition += 1;
-        actionLoop.block = 0;
-      }
-      if (actionLoop.block < actionResponseLoop.block) {
-        actionLoop.block += 1;
-      }
-      response = responses[initActionLoop + actionLoop.block];
-      actualAction = initActionLoop;
-    } else {
-      response = responses[actualAction];
-    }
-    if (actionLoop.condition === actionResponseLoop.condition
-      && actionLoop.block === actionResponseLoop.block
-      && actionResponseLoop.condition !== 0) {
-      actionResponseLoop.condition = 0;
-      actualAction = initActionLoop + actionResponseLoop.block + 1;
-      response = responses[actualAction];
-    }
-    if (!response) {
-      actualAction += 1;
-      continue;
-    }
-    keys = takeItems(keys, player);
-    swords = takeItems(swords, player);
-    // ! PERMET PAS DE GERER PLUSIEURS ITEM EN MEME TEMPS && NOT REUSABLE
-    const isCondition = isInside(response, conditions);
-    if (isCondition) {
-      const condition = response as Condition;
-      if (condition.action === Items.Key) {
-        const hasKey = keys.findIndex((key) => key.taken);
-        if (hasKey > -1) {
-          keys.slice(hasKey, 1);
-          triggerOn = Items.Key;
-        }
-      } else if (condition.action === Items.Sword) {
-        const hasSword = keys.findIndex((sword) => sword.taken);
-        if (hasSword > -1) {
-          keys.slice(hasSword, 1);
-          triggerOn = Items.Sword;
-        }
-      }
-    }
-
-    doors = doors.map((door) => {
-      if (door.position[0] === player[0] && door.position[1] === player[1] && !blocked) {
-        if (!door.open) {
-          if (door.needKey) {
-            if (triggerOn === Items.Key) {
-              return {
-                ...door,
-                open: true,
-              };
-            }
-            blocked = true;
-          }
-        }
-      }
-      return door;
-    });
-
-    // ! NE PEUT PAS BOUGER POUR L'INSTANT
-    ennemies = ennemies.map((ennemy) => {
-      if (ennemy.position[0] === player[0] && ennemy.position[1] === player[1] && !blocked) {
-        if (!ennemy.dead) {
-          if (ennemy.needSword) {
-            blocked = triggerOn !== Items.Sword;
-            if (blocked) {
-              return {
-                ...ennemy,
-                open: true,
-              };
-            }
-          }
-        }
-      }
-      return ennemy;
-    });
-    if (blocked) {
-      actualAction += 1;
-      continue;
-    }
-    const isLoop = isInside(response, loops);
-    // ! PERMET PAS DE FAIRE DES LOOP DANS DES LOOP
-    if (isLoop) {
-      const loop = response as Loop;
-      initActionLoop = actualAction;
-      actionResponseLoop = loop;
-      continue;
-    }
+  const responsesWithLoops = checkLoops(responses, loops);
+  for (const [indexResponse, response] of responsesWithLoops.entries()) {
     const isMovement = isInside(response, movements);
     if (isMovement) {
       const movement = response as Movement;
       const direction = directionValue(movement.direction);
       const quantity = movement.quantity === -1 ? Infinity : movement.quantity;
+      const optionsChangePlayerPosition = {
+        start: player,
+        shape: square.shape,
+        grid: square.grid,
+        infinity: square.infinity,
+      };
+      ennemies = moveEnnemies(ennemies, optionsChangePlayerPosition);
       for (let i = 0; i < quantity; i += 1) {
-        const newPlayerPosition = changePlayerPosition(
-          direction,
-          {
-            start: player,
-            shape: square.shape,
-            grid: square.grid,
-            infinity: square.infinity,
-          },
-        );
-        if (newPlayerPosition[0] === player[0] && newPlayerPosition[1] === player[1]) {
-          break;
+        optionsChangePlayerPosition.start = player;
+        const newPlayerPosition = changePlayerPosition(direction, optionsChangePlayerPosition);
+        if (newPlayerPosition[0] === player[0] && newPlayerPosition[1] === player[1]) break;
+        let [trigger, triggerIndex]:
+        [Triggers | undefined, number] = checkDoors(doors, newPlayerPosition);
+        if (!trigger) {
+          [trigger, triggerIndex] = checkEnnemies(ennemies, newPlayerPosition);
+        }
+        if (trigger) {
+          if (triggerIndex === -1) break;
+          const nextResponse = responsesWithLoops[indexResponse + 1];
+          if (!nextResponse) break;
+          if (!isCondition(nextResponse)) break;
+          if (!isInside(nextResponse, conditions)) break;
+          const { condition } = nextResponse;
+          if (condition !== trigger) break;
+          const { action } = nextResponse;
+          if (action === Items.Key) {
+            const keyIndex = keys.findIndex((k) => k.taken);
+            if (keyIndex === -1) break;
+            const key = keys[keyIndex] as Key;
+            if (!key.reusable) {
+              keys.splice(keyIndex, 1);
+            }
+          } else {
+            const swordIndex = swords.findIndex((s) => s.taken);
+            if (swordIndex === -1) break;
+            const sword = swords[swordIndex] as Sword;
+            if (!sword.reusable) {
+              swords.splice(swordIndex, 1);
+            }
+          }
+          if (trigger === Triggers.Door) {
+            const door = doors[triggerIndex] as Door;
+            if (!door.needKey) break;
+            doors[triggerIndex] = {
+              ...door,
+              open: true,
+            };
+          } else {
+            const ennemy = ennemies[triggerIndex] as Ennemy;
+            if (!ennemy.needSword) break;
+            ennemies[triggerIndex] = {
+              ...ennemy,
+              dead: true,
+            };
+          }
         }
         player = newPlayerPosition;
+        const lastMove = i + 1 === quantity;
+        keys = takeItems(keys, player, lastMove);
+        swords = takeItems(swords, player, lastMove);
       }
       if (options) options.cbPlayerPosition(player);
-      actualAction += 1;
-      continue;
     }
-    actualAction += 1;
   }
-  // END
   if (JSON.stringify(player) !== JSON.stringify(square.end)) {
     return false;
   }
