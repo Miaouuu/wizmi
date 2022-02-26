@@ -1,4 +1,4 @@
-import { Direction } from '../enums/Directions';
+import Direction from '../enums/Directions';
 
 export interface Movement {
   id: number

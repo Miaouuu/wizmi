@@ -1,5 +1,6 @@
 import { Condition } from './Condition';
-import { Key, Sword } from './Item';
+import { Key } from '../types/Key';
+import { Sword } from '../types/Sword';
 import { Loop } from './Loop';
 import { Movement } from './Movement';
 import { Shape } from './Shape';
